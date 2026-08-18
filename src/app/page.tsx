@@ -57,7 +57,7 @@ export default function Home() {
     <section className="shell heroShell">
       <nav className="nav" aria-label="Main navigation">
         <a className="brand" href="#top" aria-label="Teknoh home"><span className="brandMark">T</span>Teknoh</a>
-        <div className="navLinks"><a href="#principles">How it works</a><span className="statusDot">Mock-safe launch</span></div>
+        <div className="navLinks"><a href="#principles">How it works</a><span className="statusDot">Live research · human action</span></div>
       </nav>
 
       <div className="hero" id="top">
