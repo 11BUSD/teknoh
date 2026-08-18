@@ -3,6 +3,8 @@ import { getConfig } from "@/lib/config";
 import { PublicEngineResponseSchema, PublicThesisSchema } from "@/lib/contracts";
 import { hashedActor, readBoundedJson, sameOrigin, takeLocalRateLimit } from "@/lib/request-safety";
 
+export const maxDuration = 240;
+
 export async function POST(request: Request) {
   if (!sameOrigin(request)) return NextResponse.json({ error: "Request rejected." }, { status: 403 });
   let config;
@@ -24,7 +26,7 @@ export async function POST(request: Request) {
       body:JSON.stringify(parsed.data),
       cache:"no-store",
       redirect:"error",
-      signal:AbortSignal.timeout(50_000),
+      signal:AbortSignal.timeout(225_000),
     });
     if (!response.ok) {
       const status = response.status === 429 ? 429 : response.status === 401 ? 503 : 502;
