@@ -24,14 +24,20 @@ It intentionally does **not** contain proprietary ranking logic, search strategi
 ```bash
 npm install
 cp .env.example .env.local
+npm run test
+npm run typecheck
 npm run dev
 ```
 
 Set `TEKNOH_ENGINE_URL` and `TEKNOH_ENGINE_TOKEN` only on the server. Never expose the private engine token through a `NEXT_PUBLIC_` variable.
 
+The server proxy enforces a bounded request size, same-origin writes, local abuse throttling, a provider timeout, and an explicit response schema. Only the public opportunity contract reaches the browser; private score breakdowns, provider notes, prompts, and orchestration fields are stripped.
+
 ## Deployment
 
 The public web application can be deployed independently of the private engine. Configure the two server-only environment variables in the hosting platform and point `teknoh.tech` to this public deployment.
+
+The public and private services must remain separate Vercel projects with separate Git histories and environment-variable sets. The same long random `TEKNOH_ENGINE_TOKEN` is stored as a sensitive server-only variable in each project.
 
 ## Security
 
