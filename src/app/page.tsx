@@ -1,58 +1,4 @@
-"use client";
-
-import { FormEvent, useState } from "react";
-import type { PublicEngineResponse } from "@/lib/contracts";
-
-type Opportunity = PublicEngineResponse["opportunities"][number];
-
 export default function Home() {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const [result, setResult] = useState<PublicEngineResponse | null>(null);
-  const [feedback, setFeedback] = useState<Record<string, "accepted" | "rejected">>({});
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setBusy(true);
-    setError("");
-    setResult(null);
-    setFeedback({});
-    const payload = Object.fromEntries(new FormData(event.currentTarget).entries());
-    try {
-      const response = await fetch("/api/opportunities", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error ?? "Search failed");
-      setResult(body);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Search failed");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function sendFeedback(item: Opportunity, outcome: "accepted" | "rejected") {
-    if (!result || feedback[item.id]) return;
-    setFeedback((current) => ({ ...current, [item.id]: outcome }));
-    try {
-      const response = await fetch("/api/outcomes", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ requestId: result.requestId, opportunityId: item.id, outcome }),
-      });
-      if (!response.ok) throw new Error();
-    } catch {
-      setFeedback((current) => {
-        const next = { ...current };
-        delete next[item.id];
-        return next;
-      });
-    }
-  }
-
   return <main>
     <section className="shell heroShell">
       <nav className="nav" aria-label="Main navigation">
@@ -70,39 +16,15 @@ export default function Home() {
           </div>
         </div>
 
-        <form className="searchCard" onSubmit={submit} aria-busy={busy}>
-          <div className="cardTop"><div><span className="step">Opportunity direction</span><h2>What outcome are you looking for?</h2></div><span className="secure">Server protected</span></div>
-          <div className="field"><label htmlFor="offer">Outcome you want</label><textarea id="offer" name="offer" required maxLength={800} placeholder="Win qualified commercial retrofit contracts" /></div>
-          <div className="fieldGrid">
-            <div className="field"><label htmlFor="buyer">Your relevant capabilities</label><input id="buyer" name="buyer" required maxLength={400} placeholder="Commercial HVAC, controls, bonding" /></div>
-            <div className="field"><label htmlFor="geography">Where?</label><input id="geography" name="geography" required maxLength={200} placeholder="Ontario, Canada" /></div>
-          </div>
-          <div className="field"><label htmlFor="price">Minimum economic relevance <span>optional</span></label><input id="price" name="price" maxLength={120} placeholder="For example: CA$100,000 contract value" /></div>
-          <div className="field"><label htmlFor="problems">Constraints and evidence Teknoh must check</label><textarea id="problems" name="problems" required maxLength={1200} placeholder="Required licences, exclusions, deadlines, evidence sources, and anything that should disqualify a result" /></div>
-          <button className="cta" disabled={busy}>{busy ? <><span className="spinner" />Reviewing public evidence…</> : <>Review opportunities <span aria-hidden="true">↗</span></>}</button>
-          <p className="micro">Teknoh recommends research targets. It never contacts, purchases, publishes, or changes permissions on your behalf.</p>
-          <div className="message" aria-live="polite">{error ? <p className="error">{error}</p> : null}</div>
-        </form>
-      </div>
-    </section>
-
-    {result ? <section className="resultsSection" aria-live="polite">
-      <div className="shell">
-        <div className="sectionHeading"><div><span className="step">Research result</span><h2>{result.opportunities.length} evidence-backed {result.opportunities.length === 1 ? "opportunity" : "opportunities"}</h2></div><p>{result.rejectedCount} weaker signals were rejected.</p></div>
-        <div className="resultsGrid">
-          {result.opportunities.map((item) => <article className="resultCard" key={item.id}>
-            <div className="resultHeader"><div><span className={`classification ${item.classification.toLowerCase()}`}>{item.classification.replaceAll("_", " ")}</span><h3>{item.company}</h3></div><div className="score"><strong>{item.score}</strong><span>/100</span></div></div>
-            <p className="problem">{item.observedProblem}</p>
-            <div className="evidenceBlock"><span className="label">Observed facts</span><ul>{item.observedFacts.map((fact) => <li key={fact}>{fact}</li>)}</ul></div>
-            <div className="inference"><span className="label">Inference</span><p>{item.inference}</p></div>
-            {item.negativeEvidence.length ? <div className="negative"><span className="label">What weakens it</span><p>{item.negativeEvidence.join(" ")}</p></div> : null}
-            <div className="sourceList"><span className="label">Sources</span>{item.evidence.map((evidence) => <a href={evidence.sourceUrl} target="_blank" rel="noopener noreferrer" key={evidence.sourceUrl}>{new URL(evidence.sourceUrl).hostname.replace(/^www\./, "")}<span>↗</span></a>)}</div>
-            <div className="nextAction"><span className="label">Suggested next step</span><p>{item.suggestedNextAction}</p></div>
-            <div className="resultFooter"><span>{Math.round(item.confidence * 100)}% confidence</span><div className="feedback"><span>Useful?</span><button type="button" aria-label={`Mark ${item.company} useful`} aria-pressed={feedback[item.id] === "accepted"} className={feedback[item.id] === "accepted" ? "selected" : ""} onClick={() => sendFeedback(item,"accepted")}>Yes</button><button type="button" aria-label={`Mark ${item.company} not useful`} aria-pressed={feedback[item.id] === "rejected"} className={feedback[item.id] === "rejected" ? "selected" : ""} onClick={() => sendFeedback(item,"rejected")}>No</button></div></div>
-          </article>)}
+        <div className="searchCard trialCard">
+          <div className="cardTop"><div><span className="step">One free opportunity preview</span><h2>See whether Teknoh fits your business before paying.</h2></div><span className="secure">No card</span></div>
+          <p className="trialLead">Create a verified account, describe your capabilities and limits, and receive one personalized screening showing:</p>
+          <ol className="trialSteps"><li><span>01</span><div><strong>What appears to fit</strong><p>Your services, geography, project size, and business objective.</p></div></li><li><span>02</span><div><strong>What could disqualify it</strong><p>Licences, insurance, bonding, deadlines, and work you refuse.</p></div></li><li><span>03</span><div><strong>What research would check</strong><p>The official sources and evidence plan for a paid opportunity brief.</p></div></li></ol>
+          <a className="cta" href="https://engine.teknoh.tech/customer">Build my free preview <span aria-hidden="true">↗</span></a>
+          <p className="micro">One preview per verified account. It costs $0, makes no provider calls, starts no monitoring, and contacts nobody.</p>
         </div>
       </div>
-    </section> : null}
+    </section>
 
     <section className="principlesSection" id="principles">
       <div className="shell"><div className="sectionHeading"><div><span className="step">Built for signal, not noise</span><h2>A smaller, defensible answer.</h2></div><p>Opportunity research with explicit boundaries.</p></div>
