@@ -63,23 +63,23 @@ export default function Home() {
       <div className="hero" id="top">
         <div className="heroCopy">
           <div className="eyebrow"><span />Evidence-backed opportunity intelligence</div>
-          <h1>Find the demand hiding in public.</h1>
-          <p>Describe what you sell. Teknoh looks for current, public evidence that an organization has the problem you solve—then rejects weak signals before they reach you.</p>
+          <h1>Find the opportunities worth a closer look.</h1>
+          <p>Describe the outcome you want and the capabilities you can bring. Teknoh checks current public evidence, rejects weak fits, and shows what deserves human review.</p>
           <div className="proofRow" aria-label="Product boundaries">
             <span>Public evidence only</span><span>Human-reviewed actions</span><span>No scraped lead lists</span>
           </div>
         </div>
 
         <form className="searchCard" onSubmit={submit} aria-busy={busy}>
-          <div className="cardTop"><div><span className="step">Opportunity thesis</span><h2>What should Teknoh look for?</h2></div><span className="secure">Server protected</span></div>
-          <div className="field"><label htmlFor="offer">What do you sell?</label><textarea id="offer" name="offer" required maxLength={800} placeholder="AI receptionists for dental clinics" /></div>
+          <div className="cardTop"><div><span className="step">Opportunity direction</span><h2>What outcome are you looking for?</h2></div><span className="secure">Server protected</span></div>
+          <div className="field"><label htmlFor="offer">Outcome you want</label><textarea id="offer" name="offer" required maxLength={800} placeholder="Win qualified commercial retrofit contracts" /></div>
           <div className="fieldGrid">
-            <div className="field"><label htmlFor="buyer">Who buys it?</label><input id="buyer" name="buyer" required maxLength={400} placeholder="Independent dental clinics" /></div>
+            <div className="field"><label htmlFor="buyer">Your relevant capabilities</label><input id="buyer" name="buyer" required maxLength={400} placeholder="Commercial HVAC, controls, bonding" /></div>
             <div className="field"><label htmlFor="geography">Where?</label><input id="geography" name="geography" required maxLength={200} placeholder="Ontario, Canada" /></div>
           </div>
-          <div className="field"><label htmlFor="price">Typical contract value <span>optional</span></label><input id="price" name="price" maxLength={120} placeholder="$300–$1,000/month" /></div>
-          <div className="field"><label htmlFor="problems">What signals would reveal the problem?</label><textarea id="problems" name="problems" required maxLength={1200} placeholder="Missed calls, after-hours intake, appointment scheduling" /></div>
-          <button className="cta" disabled={busy}>{busy ? <><span className="spinner" />Reviewing public evidence…</> : <>Find evidence <span aria-hidden="true">↗</span></>}</button>
+          <div className="field"><label htmlFor="price">Minimum economic relevance <span>optional</span></label><input id="price" name="price" maxLength={120} placeholder="For example: CA$100,000 contract value" /></div>
+          <div className="field"><label htmlFor="problems">Constraints and evidence Teknoh must check</label><textarea id="problems" name="problems" required maxLength={1200} placeholder="Required licences, exclusions, deadlines, evidence sources, and anything that should disqualify a result" /></div>
+          <button className="cta" disabled={busy}>{busy ? <><span className="spinner" />Reviewing public evidence…</> : <>Review opportunities <span aria-hidden="true">↗</span></>}</button>
           <p className="micro">Teknoh recommends research targets. It never contacts, purchases, publishes, or changes permissions on your behalf.</p>
           <div className="message" aria-live="polite">{error ? <p className="error">{error}</p> : null}</div>
         </form>
